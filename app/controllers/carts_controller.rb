@@ -1,7 +1,7 @@
 class CartsController < ApplicationController
-  before_filter :user_signed_in?, only: [:show, :checkout]
 
   def show
+    @cart = Cart.find(params[:id])
   end
 
   def checkout

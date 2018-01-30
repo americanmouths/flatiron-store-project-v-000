@@ -3,20 +3,23 @@ class Cart < ActiveRecord::Base
   has_many :items, :through => :line_items
   belongs_to :user
 
-
   def total
-    @summ = 0
-    @summ = self.items.inject(0) {|sum, item| sum + item.price}
+    total = 0
+    self.line_items.each do |line_item|
+      total = total + (line_item.item.price * line_item.quantity)
+    end
+    total
   end
 
-  def add_item(item)
-    line_item = LineItem.find_by(item_id: item)
+  def add_item(item_id)
+    line_item = self.line_items.find_by(item_id: item_id)
     if line_item
       line_item.quantity += 1
-    else
-      line_item = LineItem.new(item_id: item, cart_id: self.id)
-    end
+      line_item.save
       line_item
+    else
+      self.line_items.build(item_id: item_id)
+    end
   end
 
   def checkout

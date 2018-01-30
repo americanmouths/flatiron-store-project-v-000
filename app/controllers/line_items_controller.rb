@@ -4,14 +4,15 @@ class LineItemsController < ApplicationController
   def create
     user = current_user
     if user.current_cart
-      user.current_card.add_item(params[:item_id])
+      user.current_cart.add_item(params[:item_id])
+      user.current_cart.save
     else
       user.current_cart = user.carts.create
       user.current_cart.add_item(params[:item_id])
+      user.current_cart.save
     end
-    user.current_cart.save
-    user.save
 
+      user.save
     redirect_to cart_path(user.current_cart)
   end
 end
